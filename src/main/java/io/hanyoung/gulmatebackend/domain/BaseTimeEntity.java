@@ -1,6 +1,5 @@
 package io.hanyoung.gulmatebackend.domain;
 
-import jdk.vm.ci.meta.Local;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
