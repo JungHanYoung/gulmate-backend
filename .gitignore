@@ -5,7 +5,7 @@ build/
 !**/src/main/java/**
 !**/src/test/**
 
-**/src/main/resources/application-local.properties
+**/src/main/resources/application-local-*.properties
 
 ### STS ###
 .apt_generated
