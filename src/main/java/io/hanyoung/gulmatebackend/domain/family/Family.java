@@ -1,6 +1,5 @@
 package io.hanyoung.gulmatebackend.domain.family;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hanyoung.gulmatebackend.domain.BaseTimeEntity;
 import io.hanyoung.gulmatebackend.domain.account.Account;
