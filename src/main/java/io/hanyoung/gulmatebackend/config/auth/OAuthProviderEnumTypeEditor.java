@@ -1,7 +1,5 @@
 package io.hanyoung.gulmatebackend.config.auth;
 
-import io.hanyoung.gulmatebackend.web.question.dto.QuestionCategory;
-
 import java.beans.PropertyEditorSupport;
 
 public class OAuthProviderEnumTypeEditor extends PropertyEditorSupport {

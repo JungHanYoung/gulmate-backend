@@ -29,7 +29,7 @@ public class CalendarController {
             @AuthUser Account account
     ) {
         if (account.getFamily().getId().equals(familyId)) {
-            List<Calendar> calendarListByYearAndMonth = calendarRepository.getCalendarListByYearAndMonth(year, month);
+            List<Calendar> calendarListByYearAndMonth = calendarRepository.getCalendarListByYearAndMonth(year, month, familyId);
             return ResponseEntity.ok(calendarListByYearAndMonth);
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN)

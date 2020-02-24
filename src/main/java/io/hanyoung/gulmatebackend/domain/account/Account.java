@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.hanyoung.gulmatebackend.domain.BaseTimeEntity;
 import io.hanyoung.gulmatebackend.domain.calendar.Calendar;
+import io.hanyoung.gulmatebackend.domain.chat.Chat;
 import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.purchase.Purchase;
 import lombok.Builder;
@@ -41,6 +42,10 @@ public class Account extends BaseTimeEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "account")
     private List<Purchase> purchaseList = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "account")
+    private List<Chat> chatMessageList = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(

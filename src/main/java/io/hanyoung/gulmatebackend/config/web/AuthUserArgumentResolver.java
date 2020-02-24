@@ -29,10 +29,11 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         OAuthAuthenticationToken authentication = (OAuthAuthenticationToken) webRequest.getUserPrincipal();
-        Account account = accountRepository.findById(authentication.getPrincipal())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user error"));
-
-
+        Account account = null;
+        if (authentication != null) {
+            account = accountRepository.findById(authentication.getPrincipal())
+                    .orElseThrow(() -> new IllegalArgumentException("Invalid user error"));
+        }
         return account;
     }
 }
