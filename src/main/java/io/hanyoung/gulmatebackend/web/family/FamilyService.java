@@ -4,7 +4,7 @@ import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.account.AccountRepository;
 import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.family.FamilyRepository;
-import io.hanyoung.gulmatebackend.web.dto.FamilySaveRequestDto;
+import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -36,7 +36,7 @@ public class Account extends BaseTimeEntity {
     private String photoUrl;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Family family;
 
     @JsonManagedReference

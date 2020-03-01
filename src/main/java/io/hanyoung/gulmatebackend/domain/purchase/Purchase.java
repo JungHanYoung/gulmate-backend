@@ -37,18 +37,18 @@ public class Purchase extends BaseTimeEntity {
     private boolean isComplete = false;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account checker;
 
     @Column
     private LocalDateTime checkedDateTime;
 
     @JsonBackReference
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Family family;
 
     @Builder

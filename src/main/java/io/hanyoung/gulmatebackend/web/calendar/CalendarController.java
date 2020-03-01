@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -24,13 +25,14 @@ public class CalendarController {
     @GetMapping("/api/v1/{familyId}/calendar")
     public ResponseEntity<?> getCalendarList(
             @RequestParam int year,
-            @RequestParam int month,
             @PathVariable Long familyId,
             @AuthUser Account account
     ) {
         if (account.getFamily().getId().equals(familyId)) {
-            List<Calendar> calendarListByYearAndMonth = calendarRepository.getCalendarListByYearAndMonth(year, month, familyId);
-            return ResponseEntity.ok(calendarListByYearAndMonth);
+            List<Calendar> calendarListByYearAndMonth = calendarRepository.getCalendarListByYearAndMonth(year, familyId);
+            return ResponseEntity.ok(calendarListByYearAndMonth.stream()
+                    .map(CalendarResponseDto::new)
+                    .collect(Collectors.toList()));
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .build();

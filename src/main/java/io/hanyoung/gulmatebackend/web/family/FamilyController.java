@@ -4,8 +4,8 @@ import io.hanyoung.gulmatebackend.config.web.AuthUser;
 import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.family.FamilyType;
-import io.hanyoung.gulmatebackend.web.dto.FamilyJoinRequestDto;
-import io.hanyoung.gulmatebackend.web.dto.FamilySaveRequestDto;
+import io.hanyoung.gulmatebackend.web.family.dto.FamilyJoinRequestDto;
+import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,7 @@ public class FamilyController {
         Family family = account.getFamily();
 
         return family != null
-                ? ResponseEntity.ok(family)
+                ? ResponseEntity.ok(new FamilyResponseDto(family))
                 : ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .build();

@@ -32,10 +32,10 @@ public class Calendar extends BaseTimeEntity {
     @Column
     private LocalDateTime dateTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Family family;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Account creator;
 
     @ManyToMany
