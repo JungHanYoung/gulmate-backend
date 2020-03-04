@@ -2,13 +2,11 @@ package io.hanyoung.gulmatebackend.web.family;
 
 import io.hanyoung.gulmatebackend.config.web.AuthUser;
 import io.hanyoung.gulmatebackend.domain.account.Account;
-import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.family.FamilyType;
-import io.hanyoung.gulmatebackend.web.dto.FamilyJoinRequestDto;
-import io.hanyoung.gulmatebackend.web.dto.FamilySaveRequestDto;
+import io.hanyoung.gulmatebackend.web.exception.ResourceNotFoundException;
+import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -21,15 +19,10 @@ public class FamilyController {
     private final FamilyService familyService;
 
     @GetMapping("/api/v1/family/me")
-    public ResponseEntity<?> getMyFamily(@AuthUser Account account) {
+    public ResponseEntity<?> getMyFamily(@AuthUser Account account) throws ResourceNotFoundException {
+        FamilyResponseDto responseDto = familyService.getCurrentFamily(account);
 
-        Family family = account.getFamily();
-
-        return family != null
-                ? ResponseEntity.ok(family)
-                : ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .build();
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/api/v1/family")
@@ -46,9 +39,9 @@ public class FamilyController {
     @PostMapping("/api/v1/family/join")
     public ResponseEntity<?> joinFamily(
             @AuthUser Account account,
-            @RequestBody FamilyJoinRequestDto requestDto) {
+            @RequestParam("inviteKey") String inviteKey) {
 
-        FamilyResponseDto responseDto = familyService.joinFamily(account, requestDto.getInviteKey());
+        FamilyResponseDto responseDto = familyService.joinFamily(account, inviteKey);
 
         return ResponseEntity.ok(responseDto);
     }

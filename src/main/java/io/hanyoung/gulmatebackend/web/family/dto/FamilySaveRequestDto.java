@@ -1,4 +1,4 @@
-package io.hanyoung.gulmatebackend.web.dto;
+package io.hanyoung.gulmatebackend.web.family.dto;
 
 import io.hanyoung.gulmatebackend.domain.family.FamilyType;
 import lombok.Builder;

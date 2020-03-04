@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
-    @Query("SELECT c FROM Calendar c WHERE year(c.dateTime) = :year and month(c.dateTime) = :month")
-    List<Calendar> getCalendarListByYearAndMonth(@Param("year") int year, @Param("month") int month);
+    @Query("SELECT c FROM Calendar c WHERE year(c.dateTime) = :year and c.family.id = :familyId")
+    List<Calendar> getCalendarListByYearAndMonth(@Param("year") int year, @Param("familyId") Long familyId);
 
 }
