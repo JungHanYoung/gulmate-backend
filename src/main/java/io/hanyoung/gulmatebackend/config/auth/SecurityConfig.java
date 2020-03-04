@@ -35,6 +35,11 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/h2-console/**",
+                        "/index.html",
+                        "/gs-guide-websocket/**",
+                        "/gs-guide-websocket",
+                        "/webjars/**",
+                        "/app.js",
                         "/api/v1/authenticate").permitAll()
                 .anyRequest().authenticated()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
