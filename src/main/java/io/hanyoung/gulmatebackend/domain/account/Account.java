@@ -6,6 +6,7 @@ import io.hanyoung.gulmatebackend.domain.BaseTimeEntity;
 import io.hanyoung.gulmatebackend.domain.calendar.Calendar;
 import io.hanyoung.gulmatebackend.domain.chat.Chat;
 import io.hanyoung.gulmatebackend.domain.family.Family;
+import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoin;
 import io.hanyoung.gulmatebackend.domain.purchase.Purchase;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,7 +38,7 @@ public class Account extends BaseTimeEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    private Family family;
+    private Family currentFamily;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "account")
@@ -46,6 +47,10 @@ public class Account extends BaseTimeEntity {
     @JsonManagedReference
     @OneToMany(mappedBy = "account")
     private List<Chat> chatMessageList = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    private Set<FamilyJoin> memberInfos = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -61,7 +66,7 @@ public class Account extends BaseTimeEntity {
         this.email = email;
         this.name = name;
         this.photoUrl = photoUrl;
-        this.family = family;
+        this.currentFamily = family;
     }
 
     public Account update(String name) {
@@ -69,8 +74,8 @@ public class Account extends BaseTimeEntity {
         return this;
     }
 
-    public Account setFamily(Family family) {
-        this.family = family;
+    public Account setCurrentFamily(Family family) {
+        this.currentFamily = family;
         return this;
     }
 }

@@ -28,13 +28,10 @@ public class JwtAuthChannelInterceptor implements ChannelInterceptor {
                 try {
                     Map<String, Object> verify = jwtUtils.verify(token);
                     Integer accountId = (Integer) verify.get("id");
-                    System.out.println("accountId: " + accountId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        } else if(wrap.getCommand() == StompCommand.SEND) {
-            System.out.println("Stomp Send : " + wrap.getDestination());
         }
         return message;
     }

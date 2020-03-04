@@ -19,7 +19,6 @@ import javax.annotation.PostConstruct;
 import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Objects;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {

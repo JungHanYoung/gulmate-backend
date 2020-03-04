@@ -30,7 +30,7 @@ public class PurchaseController {
             @PathVariable Long familyId,
             @PageableDefault(sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         if(accountBelongToFamily(account, familyId)) {
-            Page<Purchase> allByFamilyId = purchaseRepository.findAllByFamilyId(account.getFamily().getId(), pageable);
+            Page<Purchase> allByFamilyId = purchaseRepository.findAllByFamilyId(account.getCurrentFamily().getId(), pageable);
 
             return ResponseEntity.ok(allByFamilyId.stream()
             .map(PurchaseResponseDto::new)
@@ -48,9 +48,8 @@ public class PurchaseController {
             @RequestBody PurchaseSaveRequestDto requestDto,
             @PathVariable Long familyId
     ) {
-        System.out.println(requestDto.getTitle());
         if(accountBelongToFamily(account, familyId)) {
-            Purchase savedPurchase = purchaseRepository.save(requestDto.toEntity(account.getFamily(), account));
+            Purchase savedPurchase = purchaseRepository.save(requestDto.toEntity(account.getCurrentFamily(), account));
             return ResponseEntity.ok(new PurchaseResponseDto(savedPurchase));
         }
         return ResponseEntity
@@ -105,7 +104,7 @@ public class PurchaseController {
     }
 
     private boolean accountBelongToFamily(Account account, Long familyId) {
-        return account.getFamily().getId().equals(familyId);
+        return account.getCurrentFamily().getId().equals(familyId);
     }
 
     private boolean purchaseBelongToFamily(Purchase purchase, Long familyId) {

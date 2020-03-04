@@ -4,6 +4,10 @@ import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.account.AccountRepository;
 import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.family.FamilyRepository;
+import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoin;
+import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoinId;
+import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoinRepository;
+import io.hanyoung.gulmatebackend.web.exception.ResourceNotFoundException;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,7 @@ public class FamilyService {
 
     private final FamilyRepository familyRepository;
     private final AccountRepository accountRepository;
+    private final FamilyJoinRepository memberInfoRepository;
 
     @Transactional
     public FamilyResponseDto createFamily(Account account, FamilySaveRequestDto requestDto) {
@@ -34,8 +39,15 @@ public class FamilyService {
                         .build()
         );
 
-        savedFamily.addAccount(account);
-        account.setFamily(savedFamily);
+
+
+        FamilyJoin memberInfo = memberInfoRepository.save(FamilyJoin.builder()
+                .id(new FamilyJoinId(account.getId(), savedFamily.getId()))
+                .account(account)
+                .family(savedFamily)
+                .build());
+
+        savedFamily.addMember(memberInfo);
         accountRepository.save(account);
 
         return new FamilyResponseDto(savedFamily);
@@ -47,7 +59,7 @@ public class FamilyService {
         Family family = familyRepository.findByInviteKey(inviteKey)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid invite key"));
 
-        account.setFamily(family);
+        account.setCurrentFamily(family);
         return new FamilyResponseDto(family);
     }
 
@@ -64,4 +76,12 @@ public class FamilyService {
                 .toString();
     }
 
+    @Transactional
+    public FamilyResponseDto getCurrentFamily(Account account) throws ResourceNotFoundException {
+
+        Family currentFamily = account.getCurrentFamily();
+        if(currentFamily == null) throw new ResourceNotFoundException(Family.class);
+
+        return new FamilyResponseDto(currentFamily);
+    }
 }

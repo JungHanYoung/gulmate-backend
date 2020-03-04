@@ -1,5 +1,6 @@
 package io.hanyoung.gulmatebackend.web.account;
 
+import io.hanyoung.gulmatebackend.config.web.AuthUser;
 import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.account.AccountRepository;
 import io.hanyoung.gulmatebackend.web.account.dto.AccountResponseDto;
@@ -17,12 +18,7 @@ public class AccountController {
     private AccountRepository accountRepository;
 
     @GetMapping("/api/v1/me")
-    public ResponseEntity<?> me(@AuthenticationPrincipal Authentication authentication) {
-
-        Long currentAccountId = (Long) authentication.getPrincipal();
-//        System.out.println(principal);
-        Account account = accountRepository.findById(currentAccountId)
-            .orElseThrow(() -> new IllegalArgumentException("No Account is exist"));
+    public ResponseEntity<?> me(@AuthUser Account account) {
 
         return ResponseEntity.ok(new AccountResponseDto(account));
     }

@@ -1,5 +1,6 @@
 package io.hanyoung.gulmatebackend.web.calendar;
 
+import io.hanyoung.gulmatebackend.config.auth.OAuthAuthenticationToken;
 import io.hanyoung.gulmatebackend.config.web.AuthUser;
 import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.calendar.Calendar;
@@ -10,6 +11,7 @@ import io.hanyoung.gulmatebackend.web.calendar.dto.CalendarUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class CalendarController {
             @PathVariable Long familyId,
             @AuthUser Account account
     ) {
-        if (account.getFamily().getId().equals(familyId)) {
+        if (account.getCurrentFamily().getId().equals(familyId)) {
             List<Calendar> calendarListByYearAndMonth = calendarRepository.getCalendarListByYearAndMonth(year, familyId);
             return ResponseEntity.ok(calendarListByYearAndMonth.stream()
                     .map(CalendarResponseDto::new)
@@ -44,7 +46,7 @@ public class CalendarController {
             @AuthUser Account account,
             @RequestBody CalendarSaveRequestDto requestDto
     ) {
-        if(account.getFamily().getId().equals(familyId)) {
+        if(account.getCurrentFamily().getId().equals(familyId)) {
             CalendarResponseDto calendar = calendarService.createCalendar(requestDto, account, familyId);
             return ResponseEntity.ok(calendar);
         }
@@ -59,7 +61,7 @@ public class CalendarController {
             @AuthUser Account account,
             @RequestBody CalendarUpdateRequestDto requestDto
     ) {
-        if (account.getFamily().getId().equals(familyId)) {
+        if (account.getCurrentFamily().getId().equals(familyId)) {
             CalendarResponseDto responseDto = calendarService.updateCalendar(calendarId, requestDto);
             return ResponseEntity.ok(responseDto);
         }
@@ -73,7 +75,7 @@ public class CalendarController {
             @PathVariable Long calendarId,
             @AuthUser Account account
     ) {
-        if(account.getFamily().getId().equals(familyId)) {
+        if(account.getCurrentFamily().getId().equals(familyId)) {
             calendarService.deleteCalendar(calendarId);
             return ResponseEntity.ok(calendarId);
         }

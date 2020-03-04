@@ -15,14 +15,17 @@ public class FamilyResponseDto {
     private String familyName;
     private String familyType;
     private String inviteKey;
-    private List<AccountResponseDto> accountList;
+    private List<MemberResponseDto> accountList;
 
     public FamilyResponseDto(Family family) {
         this.id = family.getId();
         this.familyName = family.getFamilyName();
         this.familyType = family.getFamilyType().name();
         this.inviteKey = family.getInviteKey();
-        this.accountList = family.getAccountList().stream().map(AccountResponseDto::new).collect(Collectors.toList());
+        this.accountList = family.getMemberInfos()
+                .stream()
+                .map(memberInfo -> new MemberResponseDto(memberInfo.getAccount(), memberInfo.getFamily()))
+                .collect(Collectors.toList());
     }
 
 }

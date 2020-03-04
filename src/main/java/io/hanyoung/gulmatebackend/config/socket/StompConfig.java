@@ -15,8 +15,6 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     private final JwtAuthChannelInterceptor jwtAuthChannelInterceptor;
 
-
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
