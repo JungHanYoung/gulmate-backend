@@ -17,12 +17,12 @@ public class FamilyJoin {
     @EmbeddedId
     FamilyJoinId id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("account_id")
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("family_id")
     @JoinColumn(name = "family_id")
     private Family family;
@@ -30,16 +30,16 @@ public class FamilyJoin {
     @Column
     private String nickname;
 
-    @Column
-    private String colorHex;
-
     @Builder
-    public FamilyJoin(FamilyJoinId id, Account account, Family family, String nickname, String colorHex) {
+    public FamilyJoin(FamilyJoinId id, Account account, Family family, String nickname) {
         this.id = id;
         this.account = account;
         this.family = family;
         this.nickname = nickname;
-        this.colorHex = colorHex;
+    }
+
+    public void update(String nickname) {
+        this.nickname = nickname;
     }
 }
 

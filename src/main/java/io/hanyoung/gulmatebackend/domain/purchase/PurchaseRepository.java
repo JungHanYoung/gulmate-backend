@@ -12,4 +12,7 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
 
     @Query(value = "SELECT p FROM Purchase p WHERE p.family.id = :familyId")
     Page<Purchase> findAllByFamilyId(@Param("familyId") Long familyId, Pageable pageable);
+
+    @Query("SELECT p FROM Purchase p WHERE p.family.id = :familyId and CURRENT_TIMESTAMP = p.deadline")
+    List<Purchase> findAllByTodayAndFamilyId(@Param("familyId") Long familyId);
 }

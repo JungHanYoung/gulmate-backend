@@ -7,19 +7,31 @@ import io.hanyoung.gulmatebackend.domain.family.FamilyRepository;
 import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoin;
 import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoinId;
 import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoinRepository;
+import io.hanyoung.gulmatebackend.service.UploadService;
 import io.hanyoung.gulmatebackend.web.exception.ResourceNotFoundException;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
+import io.hanyoung.gulmatebackend.web.family.dto.FamilyUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Random;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
 public class FamilyService {
 
+    private final UploadService uploadService;
     private final FamilyRepository familyRepository;
     private final AccountRepository accountRepository;
     private final FamilyJoinRepository memberInfoRepository;
@@ -34,7 +46,6 @@ public class FamilyService {
         Family savedFamily = familyRepository.save(
                 Family.builder()
                         .familyName(requestDto.getFamilyName())
-                        .familyType(requestDto.getFamilyType())
                         .inviteKey(generated)
                         .build()
         );
@@ -47,6 +58,7 @@ public class FamilyService {
                 .family(savedFamily)
                 .build());
 
+        account.setCurrentFamily(savedFamily);
         savedFamily.addMember(memberInfo);
         accountRepository.save(account);
 
@@ -83,5 +95,46 @@ public class FamilyService {
         if(currentFamily == null) throw new ResourceNotFoundException(Family.class);
 
         return new FamilyResponseDto(currentFamily);
+    }
+
+    @Transactional
+    public void withdraw(Account account) {
+        memberInfoRepository.deleteById(new FamilyJoinId(account.getId(), account.getCurrentFamily().getId()));
+        account.setCurrentFamily(null);
+        List<FamilyJoin> byAccountId = memberInfoRepository.findByAccountId(account.getId());
+        accountRepository.save(account);
+    }
+
+    @Transactional
+    public FamilyJoin modifyMemberInfo(Account account, Long familyId, FamilyUpdateRequestDto requestDto) {
+        FamilyJoin familyJoin = memberInfoRepository.findById(new FamilyJoinId(account.getId(), familyId))
+            .orElseThrow(() -> new IllegalArgumentException("해당 유저는 가족에 속해있지 않습니다. accountId=" + account.getId()));
+        familyJoin.update(requestDto.getNickname());
+        memberInfoRepository.save(familyJoin);
+
+        return familyJoin;
+    }
+
+    @Transactional
+    public String upload(MultipartFile file, Long familyId) throws IOException {
+
+
+        String familyImageUri = uploadService.save(file, Optional.of(extractMetadata(file)));
+
+        Family family = familyRepository.findById(familyId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if(family.getFamilyPhotoUrl() != null) {
+            uploadService.delete(family.getFamilyPhotoUrl());
+        }
+        family.setFamilyPhotoUrl(familyImageUri);
+        familyRepository.save(family);
+        return familyImageUri;
+    }
+
+    private Map<String, String> extractMetadata(MultipartFile file) {
+        Map<String, String> metadata = new HashMap<>();
+        metadata.put("Content-Type", file.getContentType());
+        metadata.put("Content-Length", String.valueOf(file.getSize()));
+        return metadata;
     }
 }
