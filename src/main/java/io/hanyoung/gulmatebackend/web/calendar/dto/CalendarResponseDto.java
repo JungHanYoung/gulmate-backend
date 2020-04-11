@@ -1,6 +1,5 @@
 package io.hanyoung.gulmatebackend.web.calendar.dto;
 
-import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.calendar.Calendar;
 import io.hanyoung.gulmatebackend.web.account.dto.AccountResponseDto;
 import lombok.Getter;

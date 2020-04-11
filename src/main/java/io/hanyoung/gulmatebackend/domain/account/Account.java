@@ -41,11 +41,11 @@ public class Account extends BaseTimeEntity {
     private Family currentFamily;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Purchase> purchaseList = new ArrayList<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     private List<Chat> chatMessageList = new ArrayList<>();
 
     @JsonManagedReference
