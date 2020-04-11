@@ -21,18 +21,17 @@ import java.util.Set;
 public class Family extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
     private String familyName;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private FamilyType familyType;
-
     @Column(nullable = false, unique = true, length = 6)
     private String inviteKey;
+
+    @Column
+    private String familyPhotoUrl;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "family")
@@ -47,10 +46,10 @@ public class Family extends BaseTimeEntity {
     private Set<FamilyJoin> memberInfos = new HashSet<>();
 
     @Builder
-    public Family(String familyName, FamilyType familyType, String inviteKey) {
+    public Family(String familyName, String inviteKey, String familyPhotoUrl) {
         this.familyName = familyName;
-        this.familyType = familyType;
         this.inviteKey = inviteKey;
+        this.familyPhotoUrl = familyPhotoUrl;
     }
 
 
@@ -58,5 +57,9 @@ public class Family extends BaseTimeEntity {
 
         this.getMemberInfos().add(memberInfo);
         memberInfo.getAccount().setCurrentFamily(this);
+    }
+
+    public void setFamilyPhotoUrl(String familyPhotoUrl) {
+        this.familyPhotoUrl = familyPhotoUrl;
     }
 }

@@ -8,6 +8,7 @@ import io.hanyoung.gulmatebackend.domain.chat.Chat;
 import io.hanyoung.gulmatebackend.domain.family.Family;
 import io.hanyoung.gulmatebackend.domain.family.join.FamilyJoin;
 import io.hanyoung.gulmatebackend.domain.purchase.Purchase;
+import io.hanyoung.gulmatebackend.web.account.dto.AccountUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.Set;
 public class Account extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)

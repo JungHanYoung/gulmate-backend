@@ -11,7 +11,6 @@ public class MemberResponseDto {
     private String email;
     private String name;
     private String photoUrl;
-    private String colorHex;
     private String nickname;
 
     public MemberResponseDto(Account account, Family family) {
@@ -23,7 +22,6 @@ public class MemberResponseDto {
                 .stream()
                 .filter(memberInfo -> memberInfo.getAccount().getId().equals(account.getId())).findFirst()
                 .ifPresent(memberInfo -> {
-                    this.colorHex = memberInfo.getColorHex();
                     this.nickname = memberInfo.getNickname();
                 });
     }
