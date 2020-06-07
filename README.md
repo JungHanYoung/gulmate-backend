@@ -35,13 +35,11 @@
 
 Spring Boot 2.2.4, Postgresql >= 10, Spring Data JPA, Spring Security, Spring Websocket, JWT, AWS SDK(S3)
 
-List main libraries, frameworks used including versions (React, Angular etc...)
-
 ### Prerequisites
 
 1. 실행을 위한 Java 1.8, 빌드를 위한 Gradle 6.0.1 등의 각 버전이 필요합니다.
 2. Postgresql(version >= 10)이 로컬에 실행되고 있어야 합니다.
-3.. src/main/resources 경로에 application-local-jwt.properties, application-local-db.properties에 다음과 같은 속성을 작성해야합니다.
+3. src/main/resources 경로에 application-local-jwt.properties, application-local-db.properties에 다음과 같은 속성을 작성해야합니다.
 
 ```
 # src/main/resources/application-local-jwt.properties
