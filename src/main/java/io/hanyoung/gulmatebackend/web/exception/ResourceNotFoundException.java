@@ -1,6 +1,7 @@
 package io.hanyoung.gulmatebackend.web.exception;
 
 import lombok.Getter;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @Getter
 public class ResourceNotFoundException extends Throwable {

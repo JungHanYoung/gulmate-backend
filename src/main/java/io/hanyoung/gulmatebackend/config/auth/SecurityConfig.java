@@ -37,6 +37,12 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
                         "/h2-console/**",
                         "/images/**",
                         "/ws",
+                        "/swagger-ui.html",
+                        "/webjars/springfox-swagger-ui/**",
+                        "/swagger-resources/**",
+                        "/",
+                        "/csrf/**",
+                        "/v2/api-docs/**",
                         "/api/v1/authenticate").permitAll()
                 .anyRequest().authenticated()
         .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -51,7 +57,7 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(customAuthenticationProvider);
     }
 }

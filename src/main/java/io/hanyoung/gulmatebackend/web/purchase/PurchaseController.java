@@ -5,6 +5,7 @@ import io.hanyoung.gulmatebackend.domain.account.Account;
 import io.hanyoung.gulmatebackend.domain.purchase.Purchase;
 import io.hanyoung.gulmatebackend.domain.purchase.PurchaseRepository;
 import io.hanyoung.gulmatebackend.web.purchase.dto.*;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Api(tags = "Gulmate Purchase API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1")
@@ -26,6 +28,10 @@ public class PurchaseController {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseService purchaseService;
 
+    @ApiOperation(value = "get all purchases from gulmate", notes = "해당 귤메이트의 장보기 목록 전체", response = PurchaseResponseDto.class, responseContainer = "List")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class)
+    })
     @GetMapping("/family/{familyId}/purchase")
     public ResponseEntity<?> getAllPurchaseList(
             @AuthUser Account account,
@@ -44,10 +50,14 @@ public class PurchaseController {
         }
     }
 
+    @ApiOperation(value = "create purchase", notes = "장보기 추가")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path")
+    })
     @PostMapping("/{familyId}/purchase")
     public ResponseEntity<?> createPurchase(
             @AuthUser Account account,
-            @RequestBody PurchaseSaveRequestDto requestDto,
+            @ApiParam(required = true, value = "장보기 아이템 저장 데이") @RequestBody PurchaseSaveRequestDto requestDto,
             @PathVariable Long familyId
     ) {
         if(accountBelongToFamily(account, familyId)) {
@@ -59,13 +69,18 @@ public class PurchaseController {
                 .build();
     }
 
+    @ApiOperation(value = "update purchase", notes = "장보기 수정", response = Long.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "purchaseId", required = true, paramType = "path", dataTypeClass = Long.class)
+    })
     @PutMapping("/{familyId}/purchase/{purchaseId}")
     public ResponseEntity<?> updatePurchase(
             @PathVariable Long familyId,
             @PathVariable Long purchaseId,
             @AuthUser Account account,
-            @RequestBody PurchaseUpdateRequestDto requestDto
-    ) throws Exception {
+            @ApiParam @RequestBody PurchaseUpdateRequestDto requestDto
+    ) {
         if(accountBelongToFamily(account, familyId)) {
             Long updatedId = purchaseService.update(purchaseId, requestDto);
             return ResponseEntity.ok(updatedId);
@@ -74,12 +89,17 @@ public class PurchaseController {
                 .body("Error: 해당 인증정보는 다음 데이터에 접근할 수 없습니다.");
     }
 
+    @ApiOperation(value = "check purchase", notes = "장보기 완료 체크", response = PurchaseCheckResponseDto.class)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "purchaseId", required = true, paramType = "path", dataTypeClass = Long.class)
+    })
     @PutMapping("/{familyId}/purchase/{purchaseId}/complete")
     public ResponseEntity<?> checkPurchase(
             @PathVariable Long familyId,
             @PathVariable Long purchaseId,
             @AuthUser Account account,
-            @RequestBody PurchaseCheckRequestDto requestDto
+            @ApiParam @RequestBody PurchaseCheckRequestDto requestDto
     ) {
         if(accountBelongToFamily(account, familyId)) {
             PurchaseCheckResponseDto responseDto = purchaseService.check(purchaseId, requestDto, account);
@@ -89,12 +109,17 @@ public class PurchaseController {
                 .body("Error: 해당 인증정보는 다음 데이터에 접근할 수 없습니다.");
     }
 
+    @ApiOperation(value = "delete purchase from familyId", notes = "장보기 아이템 삭제")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "purchaseId", required = true, paramType = "path", dataTypeClass = Long.class)
+    })
     @DeleteMapping("/{familyId}/purchase/{purchaseId}")
     public ResponseEntity<?> deletePurchase(
             @AuthUser Account account,
             @PathVariable Long familyId,
             @PathVariable Long purchaseId
-    ) throws Exception {
+    ) {
         Purchase purchase = purchaseRepository.findById(purchaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Error: Can't found purchase"));
         if(purchaseBelongToFamily(purchase, familyId) && accountBelongToFamily(account, familyId)) {
@@ -105,6 +130,10 @@ public class PurchaseController {
                 .body("Error: Can't access to delete purchase");
     }
 
+    @ApiOperation(value = "get purchase list at today", response = PurchaseResponseDto.class, responseContainer = "List")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class)
+    })
     @GetMapping("/{familyId}/purchase/today")
     public ResponseEntity<?> getTodayPurchaseList(
             @PathVariable Long familyId,

@@ -14,6 +14,12 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     @Transactional
+    public Account findById(Long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 아이디의 사용자가 없습니다."));
+    }
+
+    @Transactional
     public void modify(Account account, AccountUpdateRequestDto requestDto) {
 
     }

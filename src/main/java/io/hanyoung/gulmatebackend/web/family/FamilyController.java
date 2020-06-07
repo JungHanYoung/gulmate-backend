@@ -8,6 +8,7 @@ import io.hanyoung.gulmatebackend.web.exception.ResourceNotFoundException;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilySaveRequestDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyResponseDto;
 import io.hanyoung.gulmatebackend.web.family.dto.FamilyUpdateRequestDto;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.http.entity.ContentType;
 import org.springframework.http.MediaType;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 
+@Api(tags = "Gulmate family API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/family")
@@ -35,6 +37,7 @@ public class FamilyController {
     private final FamilyService familyService;
     private final UploadService uploadService;
 
+    @ApiOperation(value = "get to gulmate", notes = "내가 속해있는 귤메이트 조회", response = FamilyResponseDto.class)
     @GetMapping("/me")
     public ResponseEntity<?> getMyFamily(@AuthUser Account account) throws ResourceNotFoundException {
         FamilyResponseDto responseDto = familyService.getCurrentFamily(account);
@@ -42,16 +45,25 @@ public class FamilyController {
         return ResponseEntity.ok(responseDto);
     }
 
+    @ApiOperation(value = "update my info form gulmate", notes = "어느 귤메이트에 대한 나의 정보 수정")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "familyId", required = true, paramType = "path", dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "requestDto", required = true, paramType = "body", dataTypeClass = FamilyUpdateRequestDto.class)
+    })
     @PutMapping("/{familyId}")
-    public ResponseEntity<?> modifyMyInfoFromFamily(@AuthUser Account account, @PathVariable Long familyId, @RequestBody FamilyUpdateRequestDto requestDto) {
+    public ResponseEntity<?> modifyMyInfoFromFamily(
+            @AuthUser Account account,
+            @PathVariable Long familyId,
+            @RequestBody FamilyUpdateRequestDto requestDto) {
         familyService.modifyMemberInfo(account, familyId, requestDto);
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation(value = "create gulmate", notes = "귤메이트 생성", response = FamilyResponseDto.class)
     @PostMapping
     public ResponseEntity<?> createFamily(
             @AuthUser Account account,
-            @RequestBody FamilySaveRequestDto requestDto) {
+            @ApiParam @RequestBody FamilySaveRequestDto requestDto) {
 
         FamilyResponseDto responseDto = familyService.createFamily(account, requestDto);
 
@@ -59,16 +71,18 @@ public class FamilyController {
 
     }
 
+    @ApiOperation(value = "join to gulmate", notes = "한 귤메이트에 들어가기", response = FamilyResponseDto.class)
     @PostMapping("/join")
     public ResponseEntity<?> joinFamily(
             @AuthUser Account account,
-            @RequestParam("inviteKey") String inviteKey) {
+            @ApiParam @RequestParam("inviteKey") String inviteKey) {
 
         FamilyResponseDto responseDto = familyService.joinFamily(account, inviteKey);
 
         return ResponseEntity.ok(responseDto);
     }
 
+    @ApiOperation(value = "withdraw the gulmate", notes = "속한 귤메이트에서 빠지기")
     @PutMapping("/withdraw")
     public ResponseEntity<?> withdraw(
             @AuthUser Account account
@@ -77,13 +91,14 @@ public class FamilyController {
         return ResponseEntity.ok().build();
     }
 
+    @ApiOperation(value = "update gulmate photo", notes = "귤메이트의 배경사진 바꾸기")
     @PostMapping(value = "/{familyId}/upload",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<?> upload(
-            @RequestParam("file") MultipartFile file,
-            @PathVariable Long familyId,
+            @ApiParam @RequestParam("file") MultipartFile file,
+            @ApiParam @PathVariable Long familyId,
             @AuthUser Account account
     ) throws IOException {
         if (account.getMemberInfos()
