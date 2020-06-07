@@ -91,7 +91,7 @@ spring.datasource.password=secret
 ./gradlew bootRun
 ```
 
-로컬에 서버가 돌아가게 되고, 플러터 앱을 사용할 수 있게 됩니다.
+로컬에 서버가 돌아가게 되고, 플러터 앱과 연동하여 사용할 수 있게 됩니다.
 
 
 ## Database
