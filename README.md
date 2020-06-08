@@ -39,23 +39,6 @@ Spring Boot 2.2.4, Postgresql >= 10, Spring Data JPA, Spring Security, Spring We
 
 1. 실행을 위한 Java 1.8, 빌드를 위한 Gradle 6.0.1 등의 각 버전이 필요합니다.
 2. Postgresql(version >= 10)이 로컬에 실행되고 있어야 합니다.
-3. src/main/resources 경로에 application-local-jwt.properties, application-local-db.properties에 다음과 같은 속성을 작성해야합니다.
-
-```
-# src/main/resources/application-local-jwt.properties
-jwt.token.issuer=gulmate-developer
-jwt.token.clientId=clientId1
-jwt.token.clientSecret=clientSecret1
-jwt.token.expirySeconds=360000
-
-# src/main/resources/application-local-db.properties
-spring.jpa.show_sql=true
-spring.jpa.hibernate.ddl-auto=create
-
-spring.datasource.url=jdbc:postgresql://localhost:5432/gulmate
-spring.datasource.username=postgres
-spring.datasource.password=secret
-```
 
 ### 개발환경 세팅
 
@@ -92,13 +75,3 @@ spring.datasource.password=secret
 ```
 
 로컬에 서버가 돌아가게 되고, 플러터 앱과 연동하여 사용할 수 있게 됩니다.
-
-
-## Database
-
-Explaining what database (and version) has been used. Provide download links.
-Documents your database design and schemas, relations etc... 
-
-## Licensing
-
-State what the license is and how to find the text version of the license.
